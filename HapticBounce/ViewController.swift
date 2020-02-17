@@ -18,6 +18,8 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
     
     // View: A single circular view to represent the sphere.
     private var sphereView: UIView!
+    private var secondSphereView: UIView!
+
     
     // The sphere's radius matches the screen's corner radius.
     private let kSphereRadius: CGFloat = 72
@@ -142,13 +144,18 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
         sphereView = UIView(frame: frame)
         sphereView.layer.cornerRadius = sphereSize / 2
         sphereView.layer.backgroundColor = #colorLiteral(red: 0.9696919322, green: 0.654135406, blue: 0.5897029042, alpha: 1)
+        
+        secondSphereView = UIView(frame: frame)
+        secondSphereView.layer.cornerRadius = sphereSize / 2
+        secondSphereView.layer.backgroundColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
 
         view.addSubview(sphereView)
+        view.addSubview(secondSphereView)
     }
 
     /// - Tag: DefineWalls
     private func initializeWalls() {
-        wallCollisions = UICollisionBehavior(items: [sphereView])
+        wallCollisions = UICollisionBehavior(items: [sphereView, secondSphereView])
         wallCollisions.collisionDelegate = self
         
         // Express walls using vertices.
@@ -183,7 +190,7 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
     
     // Each bounce against the wall is a dynamic item behavior, which lets you tweak the elasticity to match the haptic effect.
     private func initializeBounce() {
-        bounce = UIDynamicItemBehavior(items: [sphereView])
+        bounce = UIDynamicItemBehavior(items: [sphereView, secondSphereView])
         
         // Increase the elasticity to make the sphere bounce higher.
         bounce.elasticity = 0.5
@@ -191,7 +198,7 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
     
     // Represent gravity as a behavior in UIKit Dynamics:
     private func initializeGravity() {
-        gravity = UIGravityBehavior(items: [sphereView])
+        gravity = UIGravityBehavior(items: [sphereView, secondSphereView])
     }
     
     /// - Tag: DefineAnimator
@@ -320,6 +327,6 @@ class ViewController: UIViewController, UICollisionBehaviorDelegate {
             ], relativeTime: 0)
 
         let pattern = try CHHapticPattern(events: [audioEvent, hapticEvent], parameters: [])
-        return try engine.createPlayer(with: pattern)
+        return try engine.makePlayer(with: pattern)
     }
 }
